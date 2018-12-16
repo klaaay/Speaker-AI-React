@@ -6,8 +6,13 @@ import * as actions from '../actions'
 import $ from 'jquery'
 
 var recorder;
+var playBtn = null;
 
 class Recorder extends Component {
+
+    componentDidMount = () => {
+        playBtn = document.getElementById('playBtn')
+    }
 
     startRecording = () => {
         HZRecorder.get(function (rec) {
@@ -24,14 +29,26 @@ class Recorder extends Component {
         recorder.play(document.querySelector('audio'));
     }
 
-    uploadAudio = (callback) => {
+    uploadAudioAnswer = (callback) => {
         callback(recorder.upload(), this.answerCallback)
     }
 
+    uploadAudioCheck = (callback) => {
+        callback(recorder.upload(), this.checkCallback)
+    }
+
     answerCallback = async () => {
-        this.props.nextQuestion(this.props.questionLevel)
-        await this.props.setQuestion(this.props.questionLevel)
-        $('#playBtn').trigger('click');
+        await this.props.isAnswer(false)
+        await this.props.initionTimer(3000)
+        await this.props.isWaitingForCheck(true)
+        playBtn.innerText = 'check your answer...'
+    }
+
+    checkCallback = async () => {
+        await this.props.isAnswer(false)
+        await this.props.initionTimer(5000)
+        await this.props.isWaitingForCheck(false)
+        $('#playBtn').trigger('click')
     }
 
     render() {
@@ -44,7 +61,6 @@ class Recorder extends Component {
                     }
                     id="recordeStarter"
                     type="button"
-                    value="录音"
                 />
                 <input
                     onClick={
@@ -52,22 +68,28 @@ class Recorder extends Component {
                     }
                     id="recordeStoper"
                     type="button"
-                    value="停止" />
+                />
                 <input
                     onClick={
                         this.playRecording
                     }
                     type="button"
-                    value="播放" />
+                    id="recordePlayer"
+                />
                 <input
                     onClick={
                         () => {
-                            this.uploadAudio(this.props.getAnswer)
+                            if (this.props.IsAnswer) {
+                                this.uploadAudioAnswer(this.props.getAnswer)
+                            }
+                            if (this.props.IsWaitingForCheck) {
+                                this.uploadAudioCheck(this.props.checkAnswer)
+                            }
                         }
                     }
                     id="recordeEnder"
                     type="button"
-                    value="提交" />
+                />
             </div>
         )
     }
@@ -75,7 +97,8 @@ class Recorder extends Component {
 
 function mapStateToProps(state) {
     return {
-        questionLevel: state.message.questionLevel
+        IsAnswer: state.timer.isAnswer,
+        IsWaitingForCheck: state.timer.isWaitingForCheck
     };
 }
 

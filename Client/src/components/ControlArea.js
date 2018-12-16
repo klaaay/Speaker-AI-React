@@ -56,7 +56,11 @@ class ControlArea extends Component {
         variant="contained"
         color="primary"
         id="playBtn"
-        onClick={() => {
+        onClick={async () => {
+          if (!this.props.retry) {
+            await this.props.nextQuestion(this.props.questionLevel)
+            await this.props.setQuestion(this.props.questionLevel)
+          }
           this.tts(this.props.question)
         }}
       >
@@ -66,11 +70,12 @@ class ControlArea extends Component {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
+    questionLevel: state.message.questionLevel,
     question: state.message.question,
-    getConfig: state.voiceGet
+    getConfig: state.voiceGet,
+    retry: state.message.retry
   };
 }
 

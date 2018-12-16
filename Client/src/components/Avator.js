@@ -7,7 +7,7 @@ const styles = {
   bigAvatar: {
     width: 180,
     height: 180,
-    margin:'40px',
+    margin:'40px'
   },
 };
 

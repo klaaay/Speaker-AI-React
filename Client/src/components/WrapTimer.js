@@ -10,8 +10,8 @@ import $ from 'jquery'
 
 const styles = {
   count: {
+    height:'100%',
     color:'#3F51B5',
-    marginTop:'80px',
     fontSize:'80px',
     fontWeight:'bold'
   },

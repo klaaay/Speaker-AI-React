@@ -1,9 +1,16 @@
-import { GET_MESSAGE, QUESTION_SET, QUESTION_NEXT } from '../actions/types'
+import {
+  GET_MESSAGE,
+  QUESTION_SET,
+  QUESTION_NEXT,
+  CHECK_ANSWER
+} from '../actions/types'
 
 const INITIAL_STATE = {
   answer: '',
   question: '',
-  questionLevel: 1
+  questionLevel: 0,
+  score: 'Waiting for marking',
+  retry: false
 }
 
 export default function (state = INITIAL_STATE, action) {
@@ -14,6 +21,8 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, answer: action.payload }
     case QUESTION_NEXT:
       return { ...state, questionLevel: action.payload }
+    case CHECK_ANSWER:
+      return { ...state, retry: action.payload }
     default:
       return state;
   }

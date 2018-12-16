@@ -3,7 +3,10 @@ import {
   INIT_TOKEN,
   QUESTION_SET,
   IS_ANSWER,
-  QUESTION_NEXT
+  IS_WAITING_FOR_CHECK,
+  QUESTION_NEXT,
+  INITION_TIMER,
+  CHECK_ANSWER
 } from './types'
 
 import axios from 'axios'
@@ -22,10 +25,9 @@ export const initToken = () => async dispatch => {
 }
 
 export const setQuestion = (questionLevel) => async dispatch => {
-  console.log(questionLevel)
   try {
     const res = await axios.post('http://localhost:5000/question', { questionLevel: questionLevel })
-    console.log(res.data)
+    // console.log(res.data)
     dispatch({
       type: QUESTION_SET,
       payload: res.data
@@ -41,8 +43,8 @@ export const nextQuestion = (questionLevel) => {
   var newQuestionLevel = questionLevel + 1
   console.log(newQuestionLevel)
   return {
-    type:QUESTION_NEXT,
-    payload:newQuestionLevel
+    type: QUESTION_NEXT,
+    payload: newQuestionLevel
   }
 }
 
@@ -64,9 +66,41 @@ export const getAnswer = (voice,callback) => async dispatch => {
   }
 }
 
+export const checkAnswer = (voice, callback) => async dispatch => {
+  let config = {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  try {
+    const res = await axios.post('http://localhost:5000/answer/check', voice, config);
+    dispatch({
+      type: CHECK_ANSWER,
+      payload: res.data
+    })
+    callback()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export const isAnswer = (status) => {
   return {
     type: IS_ANSWER,
     payload: status
+  }
+}
+
+export const isWaitingForCheck = (status) => {
+  return {
+    type: IS_WAITING_FOR_CHECK,
+    payload: status
+  }
+}
+
+export const initionTimer = (initTime) => {
+  return {
+    type: INITION_TIMER,
+    payload: initTime
   }
 }

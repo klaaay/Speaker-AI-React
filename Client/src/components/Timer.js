@@ -11,7 +11,7 @@ class Timer extends Component {
 
   componentDidMount = () => {
     this.mounted = true;
-    if(this.props.IsAnswer){
+    if (this.props.IsAnswer|| this.props.IsWaitingForCheck ) {
       this.tick();
     }
   }
@@ -93,17 +93,18 @@ class Timer extends Component {
   render() {
     var timeRemaining = this.state.timeRemaining;
     return (
-      <div className='timer'>
+      <React.Fragment>
         {this.getFormattedTime(timeRemaining)}
-      </div>
+      </React.Fragment>
     )
   }
 }
 
 function mapStateToProps(state) {
   return {
-    IsAnswer: state.timer.isAnswer
+    IsAnswer: state.timer.isAnswer,
+    IsWaitingForCheck: state.timer.isWaitingForCheck
   };
 }
 
-export default connect(mapStateToProps,actions)(Timer)
+export default connect(mapStateToProps, actions)(Timer)

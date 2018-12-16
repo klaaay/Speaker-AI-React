@@ -28,14 +28,14 @@ class Question extends Component {
   componentDidMount = () => {
     this.props.initToken()
     this.props.setQuestion(this.props.questionLevel)
-    const socket =  openSocket('http://localhost:5000')
-    socket.emit('try',{server:'try'})
-    socket.on('question',data=>{
-      console.log(data)
-    })
-    socket.on('back',data=>{
-      console.log(data)
-    })
+    // const socket =  openSocket('http://localhost:5000')
+    // socket.emit('try',{server:'try'})
+    // socket.on('question',data=>{
+    //   console.log(data)
+    // })
+    // socket.on('back',data=>{
+    //   console.log(data)
+    // })
   }
 
   render() {
