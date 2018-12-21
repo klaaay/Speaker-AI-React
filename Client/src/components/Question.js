@@ -36,7 +36,6 @@ class Question extends Component {
 
   componentDidMount = () => {
     this.props.initToken()
-    // this.props.setQuestion(this.props.questionLevel)
   }
 
   render() {

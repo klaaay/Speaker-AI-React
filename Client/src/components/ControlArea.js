@@ -60,7 +60,7 @@ class ControlArea extends Component {
     )
   }
 
-  clearAllAnswer = ()=>{
+  clearAllAnswer = () => {
     this.props.clearQuestionBackAnswer()
     this.props.clearAnswer()
   }
@@ -68,9 +68,12 @@ class ControlArea extends Component {
   next = async () => {
     if (this.props.questionLevel !== 0) {
       await this.sleep(3000)
-      this.clearAllAnswer()
     }
     if (!this.props.retry) {
+      if (this.props.questionLevel !== 0) {
+        await this.props.getScore(this.props.question, this.props.answer)
+      }
+      this.clearAllAnswer()
       await this.props.nextQuestion(this.props.questionLevel)
       await this.props.setQuestion(this.props.questionLevel)
     }
@@ -95,6 +98,7 @@ function mapStateToProps(state) {
   return {
     questionLevel: state.message.questionLevel,
     question: state.message.question,
+    answer: state.message.answer,
     getConfig: state.voiceGet,
     retry: state.message.retry
   };

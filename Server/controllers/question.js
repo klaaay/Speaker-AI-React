@@ -1,8 +1,7 @@
-const initQuestions = require('../questions/initQuestions')
-
-const getRandomQ = require('../utils/getRandomQ')
+const io = require('../socket')
 
 exports.getQuestion = (req, res, next) => {
-  const question = getRandomQ(initQuestions)
-  return res.send(question)
+  console.log(req.question)
+  io.getIO().emit('question', { question: req.question })
+  return res.send(req.question)
 };

@@ -36,7 +36,7 @@ class Header extends Component {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            AI Interview
+            AI Interview - Interview
         </Typography>
           <ControlArea/>
         </Toolbar>

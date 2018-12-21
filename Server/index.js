@@ -12,9 +12,9 @@ app.use(cors())
 app.use(bodyParser.json({ type: 'application/json' }))
 
 require('./routes/auth')(app)
-require('./routes/voice')(app)
 require('./routes/question')(app)
 require('./routes/answer')(app)
+require('./routes/score')(app)
 
 const server = app.listen(PORT, () => {
     console.log('Sever listened in on ' + PORT);
@@ -22,9 +22,5 @@ const server = app.listen(PORT, () => {
 
 const io = require('./socket').init(server)
 io.on('connection', socket => {
-    // console.log(socket.id)
     // console.log('Client connnected')
-    // socket.on('try', data => {
-    //     io.emit('back', { back: 'back' })
-    // })
 })

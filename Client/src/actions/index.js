@@ -9,10 +9,12 @@ import {
   CHECK_ANSWER,
   CHANGE_TIP,
   QUESTION_BACK_ANSWER,
-  ANSWER_DONE
+  ANSWER_DONE,
+  GET_SCORE
 } from './types'
 
 import axios from 'axios'
+import openSocket from 'socket.io-client'
 
 export const initToken = () => async dispatch => {
   try {
@@ -24,7 +26,6 @@ export const initToken = () => async dispatch => {
   } catch (e) {
     console.log(e)
   }
-
 }
 
 export const setQuestion = (questionLevel) => async dispatch => {
@@ -34,6 +35,7 @@ export const setQuestion = (questionLevel) => async dispatch => {
       type: QUESTION_SET,
       payload: res.data
     })
+    openSocket('http://localhost:5000')
   } catch (e) {
     console.log(e)
   }
@@ -57,7 +59,7 @@ export const getAnswer = (voice, callback) => async dispatch => {
     }
   }
   try {
-    const res = await axios.post('http://localhost:5000/voice', voice, config);
+    const res = await axios.post('http://localhost:5000/answer/get', voice, config);
     dispatch({
       type: GET_ANSWER,
       payload: res.data.questionAnswer
@@ -90,21 +92,35 @@ export const checkAnswer = (voice, callback) => async dispatch => {
   }
 }
 
-export const answerDone = (question, answer) => async dispatch => {
+export const getScore = (question, answer) => async dispatch => {
+  console.log(question)
+  console.log(answer)
   try {
-    const res = await axios.post('http://localhost:5000/answer/done',
+    axios.post('http://localhost:5000/score',
       {
         question: question,
         answer: answer
       });
-    dispatch({
-      type: ANSWER_DONE,
-      payload: res.data
-    })
   } catch (err) {
     console.log(err)
   }
 }
+
+// export const answerDone = (question, answer) => async dispatch => {
+//   try {
+//     const res = await axios.post('http://localhost:5000/answer/done',
+//       {
+//         question: question,
+//         answer: answer
+//       });
+//     dispatch({
+//       type: ANSWER_DONE,
+//       payload: res.data
+//     })
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
 
 export const isAnswer = (status) => {
   return {

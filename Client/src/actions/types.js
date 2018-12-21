@@ -9,3 +9,4 @@ export const CHECK_ANSWER = 'check_answer';
 export const ANSWER_DONE = 'answer_done';
 export const CHANGE_TIP = 'change_tip';
 export const QUESTION_BACK_ANSWER = 'question_back_answer';
+export const GET_SCORE = 'get_score';
