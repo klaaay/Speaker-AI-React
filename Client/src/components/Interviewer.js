@@ -13,7 +13,7 @@ export default class Interviewer extends Component {
   render() {
     return (
       <div>
-        <Header/>
+        <Header />
         <React.Fragment>
           <Recorder />
           <Grid container spacing={24}>

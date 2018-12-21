@@ -33,7 +33,15 @@ exports.voice2text = (res, bufData, socket) => {
           result = data && data.result || [];
           text = result.join();
           console.log(text)
-          return res.send(text);
+          // 判断是否存在反问接口
+          // 如果有反问 此处返回面试者回答问题的答案 和 反问的答案
+          // 否则 只返回回答问题的答案
+
+          // 当前为fake接口默认返回回答问题的答案 和 默认的反问的答案"You can get 3000￥ per month"
+          return res.json({
+            questionAnswer: text,
+            backAnswer: "You can get 3000￥ per month"
+          });
         }
       }
       request(voice2textOption, voice2text)

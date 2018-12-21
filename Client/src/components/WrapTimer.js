@@ -10,17 +10,17 @@ import $ from 'jquery'
 
 const styles = {
   count: {
-    height:'100%',
-    color:'#3F51B5',
-    fontSize:'80px',
-    fontWeight:'bold'
+    height: '100%',
+    color: '#3F51B5',
+    fontSize: '80px',
+    fontWeight: 'bold'
   },
-  notivication:{
-    fontSize:'20px'
+  notivication: {
+    fontSize: '20px'
   }
 };
 
- class WrapTimer extends Component {
+class WrapTimer extends Component {
 
   tickCallback = () => {
 
@@ -32,19 +32,19 @@ const styles = {
   }
 
   render() {
-    const { timer,classes } = this.props;
+    const { timer, classes } = this.props;
     const { initialTimeRemaining, interval } = timer
     return (
       <Grid container justify="center" alignItems="center" className={classes.count}>
-        {<Timer
-              initialTimeRemaining={initialTimeRemaining}
-              interval={interval}
-              tickCallback={this.tickCallback}
-              formatFunc={function(millionseconds){
-                return Math.ceil(millionseconds / 1000)
-              }}
-              completeCallback={this.completeCallback}
-            />}
+        {(this.props.IsAnswer || this.props.IsWaitingForCheck) ? <Timer
+          initialTimeRemaining={initialTimeRemaining}
+          interval={interval}
+          tickCallback={this.tickCallback}
+          formatFunc={function (millionseconds) {
+            return Math.ceil(millionseconds / 1000)
+          }}
+          completeCallback={this.completeCallback}
+        /> : ""}
       </Grid>
     )
   }
@@ -52,7 +52,9 @@ const styles = {
 
 function mapStateToProps(state) {
   return {
-    timer: state.timer
+    timer: state.timer,
+    IsAnswer: state.timer.isAnswer,
+    IsWaitingForCheck: state.timer.isWaitingForCheck
   };
 }
 

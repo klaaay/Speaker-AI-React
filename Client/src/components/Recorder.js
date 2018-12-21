@@ -41,14 +41,25 @@ class Recorder extends Component {
         await this.props.isAnswer(false)
         await this.props.initionTimer(3000)
         await this.props.isWaitingForCheck(true)
-        playBtn.innerText = 'check your answer...'
+        playBtn.innerText = 'Now check your answer...'
+        this.props.changeTip('check your answer 🔍...')
     }
 
     checkCallback = async () => {
         await this.props.isAnswer(false)
-        await this.props.initionTimer(5000)
+        await this.props.initionTimer(10000)
         await this.props.isWaitingForCheck(false)
+        this.props.changeTip('Take a nap😉...')
         $('#playBtn').trigger('click')
+    }
+
+    recorderEnd = () => {
+        if (this.props.IsAnswer) {
+            this.uploadAudioAnswer(this.props.getAnswer)
+        }
+        if (this.props.IsWaitingForCheck) {
+            this.uploadAudioCheck(this.props.checkAnswer)
+        }
     }
 
     render() {
@@ -77,16 +88,7 @@ class Recorder extends Component {
                     id="recordePlayer"
                 />
                 <input
-                    onClick={
-                        () => {
-                            if (this.props.IsAnswer) {
-                                this.uploadAudioAnswer(this.props.getAnswer)
-                            }
-                            if (this.props.IsWaitingForCheck) {
-                                this.uploadAudioCheck(this.props.checkAnswer)
-                            }
-                        }
-                    }
+                    onClick={this.recorderEnd}
                     id="recordeEnder"
                     type="button"
                 />

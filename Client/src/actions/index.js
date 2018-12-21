@@ -1,12 +1,15 @@
 import {
-  GET_MESSAGE,
+  GET_ANSWER,
   INIT_TOKEN,
   QUESTION_SET,
   IS_ANSWER,
   IS_WAITING_FOR_CHECK,
   QUESTION_NEXT,
   INITION_TIMER,
-  CHECK_ANSWER
+  CHECK_ANSWER,
+  CHANGE_TIP,
+  QUESTION_BACK_ANSWER,
+  ANSWER_DONE
 } from './types'
 
 import axios from 'axios'
@@ -27,7 +30,6 @@ export const initToken = () => async dispatch => {
 export const setQuestion = (questionLevel) => async dispatch => {
   try {
     const res = await axios.post('http://localhost:5000/question', { questionLevel: questionLevel })
-    // console.log(res.data)
     dispatch({
       type: QUESTION_SET,
       payload: res.data
@@ -48,7 +50,7 @@ export const nextQuestion = (questionLevel) => {
   }
 }
 
-export const getAnswer = (voice,callback) => async dispatch => {
+export const getAnswer = (voice, callback) => async dispatch => {
   let config = {
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -57,8 +59,12 @@ export const getAnswer = (voice,callback) => async dispatch => {
   try {
     const res = await axios.post('http://localhost:5000/voice', voice, config);
     dispatch({
-      type: GET_MESSAGE,
-      payload: res.data
+      type: GET_ANSWER,
+      payload: res.data.questionAnswer
+    })
+    dispatch({
+      type: QUESTION_BACK_ANSWER,
+      payload: res.data.backAnswer
     })
     callback()
   } catch (err) {
@@ -84,6 +90,22 @@ export const checkAnswer = (voice, callback) => async dispatch => {
   }
 }
 
+export const answerDone = (question, answer) => async dispatch => {
+  try {
+    const res = await axios.post('http://localhost:5000/answer/done',
+      {
+        question: question,
+        answer: answer
+      });
+    dispatch({
+      type: ANSWER_DONE,
+      payload: res.data
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export const isAnswer = (status) => {
   return {
     type: IS_ANSWER,
@@ -103,4 +125,25 @@ export const initionTimer = (initTime) => {
     type: INITION_TIMER,
     payload: initTime
   }
+}
+
+export const changeTip = (tip) => {
+  return {
+    type: CHANGE_TIP,
+    payload: tip
+  }
+}
+
+export const clearQuestionBackAnswer = () => {
+  return ({
+    type: QUESTION_BACK_ANSWER,
+    payload: ""
+  })
+}
+
+export const clearAnswer = () => {
+  return ({
+    type: GET_ANSWER,
+    payload: ""
+  })
 }

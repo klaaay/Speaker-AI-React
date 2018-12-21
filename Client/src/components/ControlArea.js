@@ -39,15 +39,42 @@ class ControlArea extends Component {
 
   tts = (text) => {
     playBtn.innerText = 'While asking...';
+    this.props.changeTip('While asking 🎶...')
     const { getConfig } = this.props
-    audio = btts(getConfig, voiceConfig, this.done);
+    audio = btts(getConfig, voiceConfig, this.speackDone);
   }
 
-  done = () => {
+  speackDone = () => {
     playBtn.innerText = 'Please answer'
+    this.props.changeTip('Please answer ✨')
     document.body.removeChild(audio);
     this.props.isAnswer(true)
     $('#recordeStarter').trigger('click')
+  }
+
+  sleep = (time) => {
+    return new Promise(
+      (resolve) => {
+        setTimeout(resolve, time)
+      }
+    )
+  }
+
+  clearAllAnswer = ()=>{
+    this.props.clearQuestionBackAnswer()
+    this.props.clearAnswer()
+  }
+
+  next = async () => {
+    if (this.props.questionLevel !== 0) {
+      await this.sleep(3000)
+      this.clearAllAnswer()
+    }
+    if (!this.props.retry) {
+      await this.props.nextQuestion(this.props.questionLevel)
+      await this.props.setQuestion(this.props.questionLevel)
+    }
+    this.tts(this.props.question)
   }
 
   render() {
@@ -56,13 +83,7 @@ class ControlArea extends Component {
         variant="contained"
         color="primary"
         id="playBtn"
-        onClick={async () => {
-          if (!this.props.retry) {
-            await this.props.nextQuestion(this.props.questionLevel)
-            await this.props.setQuestion(this.props.questionLevel)
-          }
-          this.tts(this.props.question)
-        }}
+        onClick={this.next}
       >
         Begin
       </Button>

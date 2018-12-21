@@ -7,7 +7,7 @@ import {
 const INITIAL_STATE = {
   isAnswer: false,
   isWaitingForCheck: false,
-  initialTimeRemaining: 5000,
+  initialTimeRemaining: 10000,
   interval: 1000
 }
 
