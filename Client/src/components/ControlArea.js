@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 
-import * as actions from '../actions'
+import * as actions from "../actions";
 
-import btts from '../utils/baidu_tts_cors'
+import btts from "../utils/baidu_tts_cors";
 
-import $ from 'jquery'
+import $ from "jquery";
 
-let playBtn = null
+let playBtn = null;
 let audio = null;
 
 var voiceConfig = {
@@ -18,67 +18,72 @@ var voiceConfig = {
   timeout: 10000,
   hidden: false,
   autoplay: true,
-  onInit: function (htmlAudioElement) {
-  },
-  onSuccess: function (htmlAudioElement) {
+  onInit: function(htmlAudioElement) {},
+  onSuccess: function(htmlAudioElement) {
     audio = htmlAudioElement;
   },
-  onError: function (text) {
-    alert(text)
+  onError: function(text) {
+    alert(text);
   },
-  onTimeout: function () {
-    alert('timeout')
+  onTimeout: function() {
+    alert("timeout");
   }
-}
+};
 
 class ControlArea extends Component {
-
   componentDidMount = () => {
-    playBtn = document.getElementById('playBtn')
-  }
+    playBtn = document.getElementById("playBtn");
+  };
 
-  tts = (text) => {
-    playBtn.innerText = 'While asking...';
-    this.props.changeTip('While asking 🎶...')
-    const { getConfig } = this.props
+  tts = text => {
+    playBtn.innerText = "While asking...";
+    this.props.changeTip("While asking 🎶...");
+    const { getConfig } = this.props;
     audio = btts(getConfig, voiceConfig, this.speackDone);
-  }
+  };
 
   speackDone = () => {
-    playBtn.innerText = 'Please answer'
-    this.props.changeTip('Please answer ✨')
+    playBtn.innerText = "Please answer";
+    this.props.changeTip("Please answer ✨");
     document.body.removeChild(audio);
-    this.props.isAnswer(true)
-    $('#recordeStarter').trigger('click')
-  }
+    this.props.isAnswer(true);
+    $("#recordeStarter").trigger("click");
+  };
 
-  sleep = (time) => {
-    return new Promise(
-      (resolve) => {
-        setTimeout(resolve, time)
-      }
-    )
-  }
+  sleep = time => {
+    return new Promise(resolve => {
+      setTimeout(resolve, time);
+    });
+  };
 
   clearAllAnswer = () => {
-    this.props.clearQuestionBackAnswer()
-    this.props.clearAnswer()
-  }
+    this.props.clearQuestionBackAnswer();
+    this.props.clearAnswer();
+  };
 
   next = async () => {
-    if (this.props.questionLevel !== 0) {
-      await this.sleep(3000)
-    }
-    if (!this.props.retry) {
+    if (!this.props.done) {
       if (this.props.questionLevel !== 0) {
-        await this.props.getScore(this.props.question, this.props.answer)
+        await this.sleep(3000);
       }
-      this.clearAllAnswer()
-      await this.props.nextQuestion(this.props.questionLevel)
-      await this.props.setQuestion(this.props.questionLevel)
+      if (!this.props.retry) {
+        if (this.props.questionLevel !== 0) {
+          await this.props.getScore(this.props.question, this.props.answer);
+          this.props.enterRecord(
+            this.props.question,
+            this.props.answer,
+            this.props.score
+          );
+        }
+        this.clearAllAnswer();
+        await this.props.nextQuestion(this.props.questionLevel);
+        await this.props.setQuestion(this.props.questionLevel);
+      }
+      this.tts(this.props.question);
+    } else {
+      console.log("All Done");
     }
-    this.tts(this.props.question)
-  }
+  };
 
   render() {
     return (
@@ -90,7 +95,7 @@ class ControlArea extends Component {
       >
         Begin
       </Button>
-    )
+    );
   }
 }
 
@@ -98,10 +103,14 @@ function mapStateToProps(state) {
   return {
     questionLevel: state.message.questionLevel,
     question: state.message.question,
+    score: state.message.score,
     answer: state.message.answer,
     getConfig: state.voiceGet,
     retry: state.message.retry
   };
 }
 
-export default connect(mapStateToProps, actions)(ControlArea)
+export default connect(
+  mapStateToProps,
+  actions
+)(ControlArea);

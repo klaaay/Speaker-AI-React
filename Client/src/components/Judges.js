@@ -67,9 +67,6 @@ const styles = theme => ({
         marginTop: '25px',
         height: '200px'
     },
-    divider: {
-        margin: '10px 0'
-    },
     answerText: {
         // color: '#3F51B5'
         textAlign: 'center'

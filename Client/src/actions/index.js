@@ -9,12 +9,12 @@ import {
   CHECK_ANSWER,
   CHANGE_TIP,
   QUESTION_BACK_ANSWER,
-  ANSWER_DONE,
+  ENTER_RECORED,
   GET_SCORE
-} from './types'
+} from "./types";
 
-import axios from 'axios'
-import openSocket from 'socket.io-client'
+import axios from "axios";
+import openSocket from "socket.io-client";
 
 export const initToken = () => async dispatch => {
   try {
@@ -22,144 +22,150 @@ export const initToken = () => async dispatch => {
     dispatch({
       type: INIT_TOKEN,
       payload: res.data
-    })
+    });
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-}
+};
 
-export const setQuestion = (questionLevel) => async dispatch => {
+export const setQuestion = questionLevel => async dispatch => {
   try {
-    const res = await axios.post('http://localhost:5000/question', { questionLevel: questionLevel })
+    const res = await axios.post("http://localhost:5000/question", {
+      questionLevel: questionLevel
+    });
     dispatch({
       type: QUESTION_SET,
-      payload: res.data
-    })
-    openSocket('http://localhost:5000')
+      payload: res.data.question
+    });
+    openSocket("http://localhost:5000");
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  return {
-  }
-}
+  return {};
+};
 
-export const nextQuestion = (questionLevel) => {
-  var newQuestionLevel = questionLevel + 1
-  console.log(newQuestionLevel)
+export const nextQuestion = questionLevel => {
+  var newQuestionLevel = questionLevel + 1;
+  console.log(newQuestionLevel);
   return {
     type: QUESTION_NEXT,
     payload: newQuestionLevel
-  }
-}
+  };
+};
 
 export const getAnswer = (voice, callback) => async dispatch => {
   let config = {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      "Content-Type": "multipart/form-data"
     }
-  }
+  };
   try {
-    const res = await axios.post('http://localhost:5000/answer/get', voice, config);
+    const res = await axios.post(
+      "http://localhost:5000/answer/get",
+      voice,
+      config
+    );
     dispatch({
       type: GET_ANSWER,
       payload: res.data.questionAnswer
-    })
+    });
     dispatch({
       type: QUESTION_BACK_ANSWER,
       payload: res.data.backAnswer
-    })
-    callback()
+    });
+    callback();
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
 export const checkAnswer = (voice, callback) => async dispatch => {
   let config = {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      "Content-Type": "multipart/form-data"
     }
-  }
+  };
   try {
-    const res = await axios.post('http://localhost:5000/answer/check', voice, config);
+    const res = await axios.post(
+      "http://localhost:5000/answer/check",
+      voice,
+      config
+    );
     dispatch({
       type: CHECK_ANSWER,
       payload: res.data
-    })
-    callback()
+    });
+    callback();
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
+
+export const enterRecord = (question, answer, score) => {
+  return {
+    type: ENTER_RECORED,
+    payload: {
+      question,
+      answer,
+      score
+    }
+  };
+};
 
 export const getScore = (question, answer) => async dispatch => {
-  console.log(question)
-  console.log(answer)
   try {
-    axios.post('http://localhost:5000/score',
-      {
-        question: question,
-        answer: answer
-      });
+    const res = await axios.post("http://localhost:5000/score", {
+      question: question,
+      answer: answer
+    });
+    console.log(res.data);
+    dispatch({
+      type: GET_SCORE,
+      payload: res.data
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
-// export const answerDone = (question, answer) => async dispatch => {
-//   try {
-//     const res = await axios.post('http://localhost:5000/answer/done',
-//       {
-//         question: question,
-//         answer: answer
-//       });
-//     dispatch({
-//       type: ANSWER_DONE,
-//       payload: res.data
-//     })
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-
-export const isAnswer = (status) => {
+export const isAnswer = status => {
   return {
     type: IS_ANSWER,
     payload: status
-  }
-}
+  };
+};
 
-export const isWaitingForCheck = (status) => {
+export const isWaitingForCheck = status => {
   return {
     type: IS_WAITING_FOR_CHECK,
     payload: status
-  }
-}
+  };
+};
 
-export const initionTimer = (initTime) => {
+export const initionTimer = initTime => {
   return {
     type: INITION_TIMER,
     payload: initTime
-  }
-}
+  };
+};
 
-export const changeTip = (tip) => {
+export const changeTip = tip => {
   return {
     type: CHANGE_TIP,
     payload: tip
-  }
-}
+  };
+};
 
 export const clearQuestionBackAnswer = () => {
-  return ({
+  return {
     type: QUESTION_BACK_ANSWER,
     payload: ""
-  })
-}
+  };
+};
 
 export const clearAnswer = () => {
-  return ({
+  return {
     type: GET_ANSWER,
     payload: ""
-  })
-}
+  };
+};

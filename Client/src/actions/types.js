@@ -1,6 +1,7 @@
 export const INIT_TOKEN = 'init_token';
 export const QUESTION_SET = 'question_set';
-export const QUESTION_NEXT = 'question_next'
+export const QUESTION_NEXT = 'question_next';
+export const ENTER_RECORED = 'enter_record';
 export const GET_ANSWER = 'get_answer';
 export const IS_ANSWER = 'is_answer';
 export const IS_WAITING_FOR_CHECK = 'is_waiting_for_check';

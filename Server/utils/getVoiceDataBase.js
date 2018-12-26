@@ -16,5 +16,5 @@ module.exports = (chunks, size) => {
       }
       break;
   }
-  return data;
-}
+  return data.toString("base64");
+};
