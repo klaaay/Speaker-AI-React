@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
       break;
     case 3:
       req.question = getRandomQ(industryTechnology);
-      req.done = true
+      req.done = true;
       break;
     default:
       break;

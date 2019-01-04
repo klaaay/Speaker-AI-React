@@ -12,7 +12,7 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case QUESTION_SET:
-      return { ...state, tex: action.payload }
+      return { ...state, tex: action.payload.question }
     case INIT_TOKEN:
       return { ...state, tok: action.payload }
     default:

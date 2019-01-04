@@ -33,15 +33,18 @@ export const setQuestion = questionLevel => async dispatch => {
     const res = await axios.post("http://localhost:5000/question", {
       questionLevel: questionLevel
     });
+    console.log(res.data);
     dispatch({
       type: QUESTION_SET,
-      payload: res.data.question
+      payload: {
+        question: res.data.question,
+        done: res.data.done
+      }
     });
     openSocket("http://localhost:5000");
   } catch (e) {
     console.log(e);
   }
-  return {};
 };
 
 export const nextQuestion = questionLevel => {

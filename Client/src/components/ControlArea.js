@@ -35,7 +35,7 @@ class ControlArea extends Component {
     playBtn = document.getElementById("playBtn");
   };
 
-  tts = text => {
+  tts = () => {
     playBtn.innerText = "While asking...";
     this.props.changeTip("While asking 🎶...");
     const { getConfig } = this.props;
@@ -62,26 +62,28 @@ class ControlArea extends Component {
   };
 
   next = async () => {
-    if (!this.props.done) {
-      if (this.props.questionLevel !== 0) {
-        await this.sleep(3000);
-      }
-      if (!this.props.retry) {
+    if (!this.props.retry) {
+      if (!this.props.done) {
         if (this.props.questionLevel !== 0) {
-          await this.props.getScore(this.props.question, this.props.answer);
-          this.props.enterRecord(
-            this.props.question,
-            this.props.answer,
-            this.props.score
-          );
+          await this.sleep(3000);
         }
-        this.clearAllAnswer();
         await this.props.nextQuestion(this.props.questionLevel);
         await this.props.setQuestion(this.props.questionLevel);
+        await this.props.getScore(this.props.question, this.props.answer);
+        this.props.enterRecord(
+          this.props.question,
+          this.props.answer,
+          this.props.score
+        );
+        this.clearAllAnswer();
+        this.tts();
+      } else {
+        $("#resultBtn").trigger("click");
+        // console.log("All Done");
       }
-      this.tts(this.props.question);
-    } else {
-      console.log("All Done");
+    }else{
+      await this.sleep(3000);
+      this.tts();
     }
   };
 
@@ -106,7 +108,8 @@ function mapStateToProps(state) {
     score: state.message.score,
     answer: state.message.answer,
     getConfig: state.voiceGet,
-    retry: state.message.retry
+    retry: state.message.retry,
+    done: state.message.done
   };
 }
 
